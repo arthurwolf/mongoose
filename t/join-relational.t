@@ -65,9 +65,9 @@ find_cycle($c);
 my $dep = Department->find_one({code=>'ACC'});
 my $cur = $dep->employees->find;
 is $cur->count, 15, 'joined ok';
-while( my $r = $cur->next ) {
-    #print "FOUND: " . $r;
-}
+
+$c->update({'$set' => { code => 'test' }});
+
 
 {
 	my $dep = Department->new({code=>'Devel'});
@@ -77,6 +77,8 @@ while( my $r = $cur->next ) {
 {
 	my $per = Person->find_one({ name=>'Mary' });
 	is $per->department->code, 'Devel', 'belongs to ok';
+    my $per2 = $per->update({name => 'The other Mary'});
+	is $per->department->code, 'Devel', 'belongs to after update ok';
 }
 {
     use Data::Dumper;

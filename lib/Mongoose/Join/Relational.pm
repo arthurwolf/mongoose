@@ -41,7 +41,7 @@ sub _save {
     my $buffer = delete $self->{buffer};
     my $delete_buffer = delete $self->{delete_buffer};
 
-    # save deleted, couldn't see how to put this in Join::Relational without creating infinte loops
+    # save deleted, couldn't see how to put this in Join::Relational without creating infinte loops // 4 months later this sentence makes no sense.
     for my $deleted ( values %{$delete_buffer}){
         $deleted->save;
     }

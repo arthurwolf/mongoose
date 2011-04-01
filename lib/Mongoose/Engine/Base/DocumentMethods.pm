@@ -41,6 +41,7 @@ sub insert {
     return $self;
 }
 
+use Scalar::Util qw/reftype blessed/;
 sub update {
     my $self = shift;
     return $self->resulset->update(@_) if ref $self eq ''; #When calling on the unblessed class, we call the resultset
@@ -48,7 +49,8 @@ sub update {
     if( scalar @_ && ref($_[0]) ne 'HASH'  ){ $modification = {@_}; }
     $modification->{'$set'} = $self->resultset->_collapse_hash( $modification->{'$set'} ) if exists $modification->{'$set'};
     $self->collection->update( { _id => $self->_id }, $modification );
-    my $new_self = $self->resultset->find_one({ _id => $self->_id });
+    my $new_self = $self->resultset->find_one({ _id => $self->_id }); #seems to return a crippled object ( belongs_to are empty hashes, thus the suboptimal thing bellow ... )
+
 
     #We update ourself
     my $class_main = ref $self || $self;
@@ -58,10 +60,11 @@ sub update {
 		my $class = $self->_get_blessed_type( $type );
 		$class or next;
         next if $class->can('meta') and $class->isa('Mongoose::Join');
+        next if blessed $self->{$name}; #suboptimal, TODO
         $self->{$name} = $new_self->{$name};
     }
     
-    return $new_self;
+    return $self;
 }
 
 # shallow delete

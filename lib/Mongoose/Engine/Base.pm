@@ -22,7 +22,7 @@ sub collapse {
 		if first { refaddr($self) == refaddr($_) } @scope; #check for circularity
 	my $packed = { %$self }; # cheesely clone the data
 	for my $key ( keys %$packed ) {
-		my $attrib = $self->meta->get_attribute($key);
+		my $attrib = $self->meta->get_attribute($key);                          
 
 		# treat special cases based on Moose attribute defs or traits
 		if( defined $attrib ) {
