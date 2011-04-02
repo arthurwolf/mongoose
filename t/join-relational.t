@@ -81,6 +81,7 @@ $c->update({'$set' => { code => 'test' }});
   
 {
 	my $dep = Department->new({code=>'Devel'});
+    $dep->save;
 	my $per = Person->new( name=>'Mary', department=>$dep );
 	$per->save;
 }

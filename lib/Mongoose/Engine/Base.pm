@@ -108,7 +108,9 @@ sub _unbless {
 					$ret = $obj->collapse( @scope, $self ) or next;
 				}
 				elsif( $class->does('Mongoose::Document') ) {
-					$obj->save( @scope, $self );
+                    #THIS CAUSED ME AN INCREDIBLE AMOUNT OF TROUBLE, is this save mandatory ? removing it, only changed one test in the test suite ( requires to do the save manually, not a big deal, compared to the nightmare of ghost values ... ).
+                    #this causes recursion on all belongs_to relationships ... and any value in there that is too old ( has been changed since somewhere else ) is going to be replaced. Very bad.
+					#$obj->save( @scope, $self );
 					my $id = $obj->_id;
 					$ret = { '$ref' => $class->meta->{mongoose_config}->{collection_name}, '$id'=>$id };
 				}elsif( $class->isa('Mongoose::Join::Relational')){

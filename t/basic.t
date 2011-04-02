@@ -28,6 +28,7 @@ package main;
 }
 {
 	my $homer = Person->new( name => "Homer Simpson" );
+    $homer->save;
 	my $marge = Person->new( name => "Marge Simpson" ); 
 	#$homer->spouse($marge);
 	$marge->spouse($homer);
