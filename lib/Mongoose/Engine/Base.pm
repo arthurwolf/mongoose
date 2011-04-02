@@ -111,8 +111,16 @@ sub _unbless {
 					$obj->save( @scope, $self );
 					my $id = $obj->_id;
 					$ret = { '$ref' => $class->meta->{mongoose_config}->{collection_name}, '$id'=>$id };
-				} 
-				elsif( $class->isa('Mongoose::Join') ) {
+				}elsif( $class->isa('Mongoose::Join::Relational')){
+                    #we only save if we are in a many-to-may relationship, otherwise bad things happen
+                    #print "$self, $obj, " ,  $obj->reciprocal , "\n";
+                    if( $obj->with_class->meta->get_attribute($obj->reciprocal)->type_constraint =~ m{^Mongoose::Join::Relational} ){
+                        #print "saving a $obj in $self because reciprocical\n";
+                        $ret = [ $obj->_save( $self, @scope ) ];
+                    }else{
+                        #print "not saving a $obj in $self\n";
+                    }
+                }elsif( $class->isa('Mongoose::Join') and not $class->isa('Mongoose::Join::Relational') ) {
 					$ret = [ $obj->_save( $self, @scope ) ];
 				} 
 			} else {

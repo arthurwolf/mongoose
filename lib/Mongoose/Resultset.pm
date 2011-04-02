@@ -142,7 +142,7 @@ sub update_or_new{
 sub delete{shift->remove(@_)}
 sub remove{
     my ( $self, $options ) = @_;
-    return $self->_class->collection->remove( $self->_query, $options );
+    return $self->_class->collection->remove( $self->_query, { %{$self->_attributes ? $self->_attributes : {}}, %{$options ? $options : {}} } );
 }
 
 sub delete_all{shift->remove_all(@_)}

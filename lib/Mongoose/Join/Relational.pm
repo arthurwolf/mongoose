@@ -81,6 +81,7 @@ around remove => sub {
             }else{
                 $obj->{$self->reciprocal}->remove('no_recursion', $self->owner) if $recurse;
             }
+            $obj->save;
         }
         return $self->$orig(@objs);
     }else{
@@ -143,7 +144,8 @@ sub find_or_create {
     my $self = shift;
     my $obj = $self->resultset->find_or_create( @_ );
     $self->add($obj);
-    $self->owner->save;
+    #$self->owner->save;
+    $obj->save;
     return $obj;
 }
 
